@@ -1,0 +1,20 @@
+## Priority Selector
+A priority selector is a hardware module that chooses one input from a set of multiple inputs based on a fixed priority. Each input has two signals: Data and Valid. Data is the actual payload of an input, and valid 
+is a flag that indicates whether that payoad is meaningful or not. 
+
+It works by analysing all N inputs simultaneously, and amongst the inputs with `valid = 1`, it selects the one with the highest priority (lowest index). It outputs the data of the selected input, the index of that 
+input and the valid flag. 
+
+Key characteristics of this module is: 
+  - Parametrizable, Can scale to any number of inputs `N` and data width `DATA_W`
+  - Deterministic, always producing the same output to the same set of inputs.
+  - Scalable, Implemented as a logarithmic-depth reduction tree, so the number of comparison stages grows as O(log2 N).
+
+Use cases:
+  - Arbitration between multiple streams in FPGA trading pipelines
+  - Selecting the first ready input in multi-source processing
+  - Any system that needs low-latency decision making based on input validity
+
+#
+
+It had two versions, one fully pipelined, with registers at input, output and between each stage, and one mostly combnational, with registers only at input and output. 
