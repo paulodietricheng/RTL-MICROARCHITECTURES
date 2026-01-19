@@ -1,0 +1,96 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Engineer: Paulo Dietrich
+// Create Date: 01/18/2026
+// Design Name: Pipelined Priority Selector
+// Module Name: Priority_Select_Pipelined
+// Description: Parameterized priority selector with pipelined tree
+//////////////////////////////////////////////////////////////////////////////////
+
+module Priority_Select_Pipelined #(
+    //parameters
+    parameter int N = 8,
+    parameter int DATA_W = 16
+    )(
+    //inputs
+    input logic clk,
+    input logic rst_n,
+    input logic [N-1:0] valid_in,
+    input logic [N-1:0][DATA_W-1:0] data_in,
+
+    //outputs
+    output logic valid_out,
+    output logic [DATA_W-1:0] data_out,
+    output logic [$clog2(N)-1:0] idx_out
+    );
+
+    localparam int IDX_W  = $clog2(N);
+    localparam int STAGES = $clog2(N);
+
+    // stage storage
+    logic [0:STAGES][N-1:0] v;
+    logic [0:STAGES][N-1:0][DATA_W-1:0] d;
+    logic [0:STAGES][N-1:0][IDX_W-1:0] i;
+
+    // Input Register
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            v[0] <= '0;
+            d[0] <= '0;
+            i[0] <= '0;
+        end else begin
+            for (int k = 0; k < N; k++) begin
+                v[0][k] <= valid_in[k];
+                d[0][k] <= data_in[k];
+                i[0][k] <= k[IDX_W-1:0];
+            end
+        end
+    end
+
+    // Pipelined reduction tree
+    genvar s, k;
+    generate
+        for (s = 0; s < STAGES; s++) begin : GEN_PIPE_STAGES
+            for (k = 0; k < (N >> s); k += 2) begin : GEN_NODES
+
+                logic v_w;
+                logic [DATA_W-1:0] d_w;
+                logic [IDX_W-1:0] i_w;
+
+                Small_Block_Priority_Select #(
+                    .DATA_W(DATA_W),
+                    .IDX_W (IDX_W)
+                ) U_SEL (
+                    .valid_a(v[s][k]),
+                    .valid_b(v[s][k+1]),
+                    .data_a(d[s][k]),
+                    .data_b(d[s][k+1]),
+                    .idx_a(i[s][k]),
+                    .idx_b(i[s][k+1]),
+                    .valid_w(v_w),
+                    .data_w(d_w),
+                    .idx_w(i_w)
+                );
+
+                // pipeline register
+                always_ff @(posedge clk or negedge rst_n) begin
+                    if (!rst_n) begin
+                        v[s+1][k>>1] <= 1'b0;
+                        d[s+1][k>>1] <= '0;
+                        i[s+1][k>>1] <= '0;
+                    end else begin
+                        v[s+1][k>>1] <= v_w;
+                        d[s+1][k>>1] <= d_w;
+                        i[s+1][k>>1] <= i_w;
+                    end
+                end
+            end
+        end
+    endgenerate
+
+    // Output assignment
+    assign valid_out = v[STAGES][0];
+    assign data_out = d[STAGES][0];
+    assign idx_out = i[STAGES][0];
+
+endmodule
