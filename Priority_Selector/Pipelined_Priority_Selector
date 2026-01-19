@@ -24,7 +24,7 @@ module Priority_Select_Pipelined #(
     localparam int IDX_W  = $clog2(N);
     localparam int STAGES = $clog2(N);
 
-    // Stage Storage
+    // Stage arrays
     logic [0:STAGES][N-1:0] v;
     logic [0:STAGES][N-1:0][DATA_W-1:0] d;
     logic [0:STAGES][N-1:0][IDX_W-1:0] i;
