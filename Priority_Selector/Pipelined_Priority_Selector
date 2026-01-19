@@ -8,17 +8,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module Priority_Select_Pipelined #(
-    //parameters
     parameter int N = 8,
     parameter int DATA_W = 16
     )(
-    //inputs
     input logic clk,
     input logic rst_n,
     input logic [N-1:0] valid_in,
     input logic [N-1:0][DATA_W-1:0] data_in,
 
-    //outputs
     output logic valid_out,
     output logic [DATA_W-1:0] data_out,
     output logic [$clog2(N)-1:0] idx_out
@@ -27,7 +24,7 @@ module Priority_Select_Pipelined #(
     localparam int IDX_W  = $clog2(N);
     localparam int STAGES = $clog2(N);
 
-    // stage storage
+    // Stage Storage
     logic [0:STAGES][N-1:0] v;
     logic [0:STAGES][N-1:0][DATA_W-1:0] d;
     logic [0:STAGES][N-1:0][IDX_W-1:0] i;
