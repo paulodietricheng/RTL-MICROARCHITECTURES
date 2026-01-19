@@ -6,6 +6,7 @@ timescale 1ns / 1ps
 // Module Name: Priority_Select_Comb
 // Description: Parameterized combinational priority selector
 //////////////////////////////////////////////////////////////////////////////////
+
 module Priority_Select_Low_Latency #(
     parameter int N = 8,
     parameter int DATA_W = 16
