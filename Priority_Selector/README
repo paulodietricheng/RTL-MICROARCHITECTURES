@@ -18,10 +18,9 @@ Use cases:
 ## Architecture
 
 The design is based on a reduction tree, grouping the inputs in pairs and then assigning a winner. This module is called STAGE. Then, it propagates its `index`, 
-`data` and `valid` to the next stage, to realize the comparision again. In the case of a odd number of inputs, the last, unpaired input jumps ahead to the next level 
-until it is able to form a pair. 
+`data` and `valid` to the next stage, to realize the comparision again.
 
-It had two versions, one fully pipelined, with registers at input, output and between each stage, and one mostly combnational, with registers only at input and output.
+It was designed in two versions, one fully pipelined, with registers at input, output and between each stage, and one mostly combnational, with registers only at input and output.
 
 ### Comparision (`N = 8`, `DATA_W = 16`)
 Pipelined Version: 
