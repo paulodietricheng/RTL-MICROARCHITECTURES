@@ -8,7 +8,7 @@ Each project explores a specific hardware problem and documents both the **imple
 
 ## Motivation
 
-I created this repository to go beyond writing “working HDL” and instead practice **thinking in hardware**.
+I created this repository to learn by practicing.
 
 In particular, I am using these projects to learn how:
 
@@ -18,13 +18,11 @@ In particular, I am using these projects to learn how:
 - Designs scale as input sizes increase
 - RTL decisions appear in synthesis and timing reports
 
-This repository reflects an **iterative learning process**, not just final answers.
-
 ---
 
 ## Repository Structure
 
-Each folder is a self-contained microarchitecture project, containing the clear RTL in SystemVerilog, one simple testbench and a README explaining the design, architectural choices and tradeoffs.
+Each folder is a self-contained microarchitecture project, containing the RTL in SystemVerilog, one simple testbench and a README explaining the design, architectural choices and tradeoffs.
 
 ---
 
