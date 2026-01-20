@@ -54,7 +54,7 @@ module Priority_Select_Pipelined #(
                 logic [DATA_W-1:0] d_w;
                 logic [IDX_W-1:0] i_w;
 
-                Small_Block_Priority_Select #(
+                Selector_Module #(
                     .DATA_W(DATA_W),
                     .IDX_W (IDX_W)
                 ) U_SEL (
