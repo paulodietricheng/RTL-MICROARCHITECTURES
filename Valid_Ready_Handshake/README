@@ -6,7 +6,9 @@ This module is a fundamental building block for larger systems, such as trading 
 
 ##Key features
   - Parametrizable, scaling to any data width `DATA_W`
-  - Deterministic, producing the same output for the same set of inputs. 
+  - Deterministic, producing the same output for the same set of inputs.
+  - f_max = 580 MHz
+  - Latency: 1 cycle at 580 MHz
 
 ##Use Cases
   - Skid buffer in high-frequency trading / low-latency pipelines
