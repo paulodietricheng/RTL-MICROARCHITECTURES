@@ -25,13 +25,13 @@ It was designed in two versions, one fully pipelined, with registers at input, o
 ### Comparision (`N = 8`, `DATA_W = 16`)
 Pipelined Version: 
   - f_max: 392MHz
-  - Throughput: 392MRPS
-  - Latency: 7.65ns
+  - Throughput: 392 MRPS
+  - Latency: 3 cycles at 392MHz
 
 Combinational Version:
   - f_max: 315MHz
   - Throughput: 315 MRPS
-  - Latency: 3.17ns
+  - Latency: 1 cycle at 315MHz
 
 It is possible to observe that the combinational version runs on a slower maximum frequency by 19.64% and it has a throughput 19.64% smaller, but the latency has improved 
 in over 58%. 
