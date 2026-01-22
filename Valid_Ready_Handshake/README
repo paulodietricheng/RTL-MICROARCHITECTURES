@@ -1,0 +1,14 @@
+#Valid-Ready Pipeline Stage
+The Valid–Ready Pipeline Stage is a single-entry buffer implementing a valid–ready handshake for FPGA streaming pipelines. It enables deterministic 
+dataflow with backpressure propagation, ensuring no data loss and predictable latency, even when downstream stages stall.
+
+This module is a fundamental building block for larger systems, such as trading pipelines, arbitration chains, and multi-stage streaming architectures
+
+##Key features
+  - Parametrizable, scaling to any data width `DATA_W`
+  - Deterministic, producing the same output for the same set of inputs. 
+
+##Use Cases
+  - Skid buffer in high-frequency trading / low-latency pipelines
+  - Interface to AXI-Stream
+  - Pipeline Stage Buffering
