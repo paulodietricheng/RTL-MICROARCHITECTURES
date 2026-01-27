@@ -1,0 +1,65 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Engineer: Paulo Dietrich
+// Create Date: 01/23/2026 12:07:46 PM
+// Module Name: Sliding_Window_Extractor
+// Project Name: Sliding_Window_Extractor_Tree_based
+// Revision: 0
+//////////////////////////////////////////////////////////////////////////////////
+
+module Tree_Reduction #(
+    parameter int DATA_W = 64,
+    parameter int WINDOW_SIZE = 128
+    )(  //Signals
+        input logic clk, rst_n,
+        
+        //input
+        input logic [DATA_W-1:0] data [0:WINDOW_SIZE-1],
+        
+        //output
+        output logic [DATA_W-1:0] data_w       
+    );
+    
+    //Parameters
+    localparam STAGES = $clog2(WINDOW_SIZE);
+    
+    //Stage arrays
+    logic [DATA_W-1:0] d [0:STAGES][0:WINDOW_SIZE-1];
+    
+    //Tree generation
+    genvar s, k;
+    generate
+        for (s = 0; s < STAGES; s++) begin : GEN_TREE
+            for (k = 0; k < (WINDOW_SIZE >> s); k += 2) begin : GEN_NODE
+            
+            logic [DATA_W-1:0] d_w_reg;
+            
+                //Comparator instantiation
+                Module_Comparator #(
+                    .DATA_W(DATA_W)
+                ) U_COMP (
+                    .data_0(d[s][k]),
+                    .data_1(d[s][k+1]),
+                    .data_w(d_w_reg)
+                );
+                
+                //Pipeline generation
+                always_ff @(posedge clk, negedge rst_n) begin
+                    if (!rst_n)
+                        d[s][k>>1] <= '0;
+                    else
+                        d[s][k>>1] <= d_w_reg;
+                end                              
+            end
+        end
+    endgenerate
+    
+    //output register
+    always_ff @(posedge clk, negedge rst_n) begin
+        if(!rst_n)
+            data_w <= '0;
+       else
+            data_w <= d[STAGES][0];
+    end
+    
+endmodule
