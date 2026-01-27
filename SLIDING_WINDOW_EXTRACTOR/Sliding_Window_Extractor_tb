@@ -1,0 +1,63 @@
+`timescale 1ns / 1ps
+
+module Sliding_Window_Extractor_tb;
+
+    // Parameters
+    parameter DATA_W = 16;
+    parameter WINDOW_SIZE = 4;
+
+    // DUT signals
+    logic clk;
+    logic rst_n;
+    logic [DATA_W-1:0] data;
+    logic [DATA_W-1:0] maximum_out;
+
+    // DUT instantiation
+    Sliding_Window_Extractor #(
+        .DATA_W(DATA_W),
+        .WINDOW_SIZE(WINDOW_SIZE)
+    ) dut (
+        .clk(clk),
+        .rst_n(rst_n),
+        .data(data),
+        .maximum_out(maximum_out)
+    );
+
+    // Clock generation
+    initial clk = 0;
+    always #5 clk = ~clk;  // 10 ns period
+
+    // Stimulus
+    initial begin
+        rst_n = 0;
+        data = 0;
+
+        // Reset for a few cycles
+        repeat (2) @(posedge clk);
+        rst_n = 1;
+
+        // Feed simple test sequence
+        data = 3; @(posedge clk);
+        data = 1; @(posedge clk);
+        data = 4; @(posedge clk);
+        data = 2; @(posedge clk);
+        data = 5; @(posedge clk);
+        data = 0; @(posedge clk);
+        data = 2; @(posedge clk);
+        data = 8; @(posedge clk);
+        data = 3; @(posedge clk);
+        data = 7; @(posedge clk);
+        data = 6; @(posedge clk);
+
+        // Finish simulation
+        repeat (2) @(posedge clk);
+        $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $display("Time\tData\tMaximum");
+        $monitor("%0t\t%0d\t%0d", $time, data, maximum_out);
+    end
+
+endmodule
