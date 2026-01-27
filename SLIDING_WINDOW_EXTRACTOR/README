@@ -1,0 +1,30 @@
+#Sliding Window Extractor
+
+This block is responsible for evaluationg the most recent inputs and evaluate the maximum of them in each clock cycle. The data is shifted one register
+on each clock cycle: the newest value rolls in, and the oldest value rolls out. This project will explore two designs of this module. The first design 
+is rather software like, while the second uses a reduction tree. The designs were analysed on critical path length, timing closure and scalability.
+
+##Software Like
+###Key features
+ - Implements a for loop in order to compare the maginitude of the current number to the first observed. 
+ - Generates a `WINDOW_SIZE - 1` deep chain of muxes, scaling as `O(WINDOW_SIZE)`.
+
+When analysing this design with 64 bit data at a window size of 128, running on a 645 MHz clock, this design broke. The following data was recorded:
+
+WNS = 0.211 ns | WHS = 0.027 ns | WPWS = -0.050 ns | Critical Path length: 63 MUX
+
+This design failed timing due to the worst pulse width slack.
+
+##Tree based
+###Key features
+  - Implements a reduction tree in order to compare magnitudes. The tree is composite of blocks, which compare the numbers in pairs. The winner of each block
+    feeds into the next, and finally, a overall winner is assigned. 
+  - Generates a tree which scales as `O(log2(WINDOW_SIZE))`
+
+When analyzing this design with the same parameters as the last one, it also broke, and the very same numbers were observed, with exception of the critical path,
+now composed of 7 muxes. 
+
+This means however, that what breaks is not the magnitude comparation path, but rather the shift registers, as the only thing that is exactely the same in both designs 
+is the window shifting part, not the tree nor the long mux chain. 
+
+The expected result however, is that due to lesser combinational depth, the tree based result can be used in higher frequency environments.
