@@ -41,15 +41,7 @@ module Tree_Reduction #(
                     .data_0(d[s][k]),
                     .data_1(d[s][k+1]),
                     .data_w(d_w_reg)
-                );
-                
-                //Pipeline generation
-                always_ff @(posedge clk, negedge rst_n) begin
-                    if (!rst_n)
-                        d[s][k>>1] <= '0;
-                    else
-                        d[s][k>>1] <= d_w_reg;
-                end                              
+                );                        
             end
         end
     endgenerate
