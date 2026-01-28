@@ -23,6 +23,13 @@ module Sliding_Window_Extractor #(
     
     //register array
     logic [DATA_W-1:0] data_reg [0:WINDOW_SIZE-1];
+
+    //Populate array
+    always_comb begin
+        for (int k = 0; k < WINDOW_SIZE; k++) begin
+            d[0][k] = data[k];
+        end
+    end
     
     //Instantiate tree
     Tree_Reduction # (
