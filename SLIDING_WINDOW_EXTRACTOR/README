@@ -1,19 +1,13 @@
 #Sliding Window Extractor
 
 This block is responsible for evaluationg the most recent inputs and evaluate the maximum of them in each clock cycle. The data is shifted one register
-on each clock cycle: the newest value rolls in, and the oldest value rolls out. This project will explore two designs of this module. The first design 
-is rather software like, while the second uses a reduction tree. The designs were analysed on critical path length, timing closure and scalability.
+on each clock cycle: the newest value rolls in, and the oldest value rolls out. This project will explore three designs of this module. The first design 
+is a common software approach, while the second uses a reduction tree. The last design is a monotonic deque. The designs were analysed on critical path length, timing closure and scalability.
 
 ##Software Like
 ###Key features
  - Implements a for loop in order to compare the maginitude of the current number to the first observed. 
  - Generates a `WINDOW_SIZE - 1` deep chain of muxes, scaling as `O(WINDOW_SIZE)`.
-
-When analysing this design with 64 bit data at a window size of 128, running on a 645 MHz clock, this design broke. The following data was recorded:
-
-WNS = 0.211 ns | WHS = 0.027 ns | WPWS = -0.050 ns | Combinational Depth: 63 MUX
-
-This design failed timing due to the worst pulse width slack.
 
 ##Tree based
 ###Key features
@@ -21,10 +15,17 @@ This design failed timing due to the worst pulse width slack.
     feeds into the next, and finally, a overall winner is assigned. 
   - Generates a tree which scales as `O(log2(WINDOW_SIZE))`
 
-When analyzing this design with the same parameters as the last one, it also broke, and the very same numbers were observed, with exception of the Combinational Depth,
-now composed of 7 muxes. 
+##Monotonic Deque
+###Key features
+ - Implements a precise control system based on head and tail pointers, allowing for O(1) scaling.
+ - Uses RAM blocks.
 
-This means that the true critical path is not the comparition block, but rather the shift registers (window architecture), as the only thing that is exactely the same in both designs 
-is this block, not the tree nor the long mux chain. 
+This design works by comparing only the possible candidates to max in that window. It does it by comparing new inputs to older data in the deque. When the data is older than the duration of the window or smaller 
+in magnitude when compared to the new data, this older data is discarded. 
 
-The expected result however, is that due to lesser combinational depth, the tree based result can be used in higher frequency environments.
+From this experiment, some conclusions were observed. 
+The Software Like design performed best in high frequencies and smaller window sizes, because it is simply a purely combinational chain of N-1 muxes. This simple architecture is implemented by using LUTs, which are easy and cheap for FPGAs.
+
+The tree design and the monotonic deque however, are routing heavy, introducing a large routing delay. This was catrastrophic in high frequencies. But, when the size of the window is very large and the frequency is not
+so high, the monotonic deque and the tree based design were proven to outperform the simple design. 
+
