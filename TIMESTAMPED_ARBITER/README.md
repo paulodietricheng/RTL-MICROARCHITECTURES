@@ -12,9 +12,9 @@ Two architectures were made. One purely combinational, and another fully pipelin
 
 ## Purely combinational (DATA_W = 16, N = 8, TIMESTAMP_W = 16)
 
-The latency in this design is one cycle at 117 MHz, generating a time latency of 8.5ns. However, it quickly broke when trying to scale the size of the comparator.
+The minimum latency in this design is one cycle at 117 MHz, generating a time latency of 8.5ns. However, it quickly broke when trying to scale the size of the comparator.
 
 ## Pipelined(DATA_W = 16, N = 8, TIMESTAMP_W = 16)
 
-The latency in this design is 3 cyles at 227 MHz, generating a time latency of 13ns. However, the throughput increased in over 5 times. 
+The minimum latency in this design is 3 cyles at 227 MHz, generating a time latency of 13ns. However, the throughput increased in over 5 times. 
 
