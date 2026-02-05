@@ -1,22 +1,22 @@
-#Sliding Window Extractor
+# Sliding Window Extractor
 
 This block is responsible for evaluationg the most recent inputs and evaluate the maximum of them in each clock cycle. The data is shifted one register
 on each clock cycle: the newest value rolls in, and the oldest value rolls out. This project will explore three designs of this module. The first design 
 is a common software approach, while the second uses a reduction tree. The last design is a monotonic deque. The designs were analysed on critical path length, timing closure and scalability.
 
-##Software Like
-###Key features
+## Software Like
+### Key features
  - Implements a for loop in order to compare the maginitude of the current number to the first observed. 
  - Generates a `WINDOW_SIZE - 1` deep chain of muxes, scaling as `O(WINDOW_SIZE)`.
 
-##Tree based
-###Key features
+## Tree based
+### Key features
   - Implements a reduction tree in order to compare magnitudes. The tree is composite of blocks, which compare the numbers in pairs. The winner of each block
     feeds into the next, and finally, a overall winner is assigned. 
   - Generates a tree which scales as `O(log2(WINDOW_SIZE))`
 
-##Monotonic Deque
-###Key features
+## Monotonic Deque
+### Key features
  - Implements a precise control system based on head and tail pointers, allowing for O(1) scaling.
  - Uses RAM blocks.
 
